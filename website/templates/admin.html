@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+    <h2 align="center">Admin Page</h2>
+    <br />
+
+    <h3>List of Users</h3>
+    <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Authorization</th>
+            <th>Change authorization</th>
+            <th>Company</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.authorization }}</td>
+              <td>
+                {% if user.id != current_user.id %}
+                  <form action="{{ url_for('auth.update_authorization', target_user_id=user.id) }}" method="post">
+                    {% if user.authorization == 'member' %}
+                      <input type="hidden" name="new_authorization" value="admin">
+                      <input class="btn btn-secondary" type="submit" value="Make Admin">
+                    {% elif user.authorization == 'admin' %}
+                      <input type="hidden" name="new_authorization" value="member">
+                      <input class="btn btn-primary" type="submit" value="Make Member">
+                    {% endif %}
+                  </form>
+                {% endif %}
+              </td>
+              <td>
+                <form action="{{ url_for('auth.assign_company', target_user_id=user.id) }}" method="post">
+                  <select name="company_id">
+                    <option value="">None</option>
+                    {% for company in companies %}
+                      <option value="{{ company.id }}" {% if user.company and user.company.id == company.id %}selected{% endif %}>{{ company.company_name }}</option>
+                    {% endfor %}
+                  </select>
+                  <input class="btn btn-primary" type="submit" value="Update">
+                </form>
+            </td>
+              <td>
+                {% if user.id != current_user.id %}
+                  <form action="{{ url_for('auth.delete_user', target_user_id=user.id) }}" method="post">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          <tr>
+            <form action="{{ url_for('auth.sign_up') }}" method="POST">
+              <td></td> <!-- Leave the ID column empty for new member -->
+              <td>
+                <input type="text" name="firstName" placeholder="First Name" required>
+              </td>
+              <td>
+                <input type="email" name="email" placeholder="Email" required>
+              </td>
+              <td>
+                <input type="password" name="password1" placeholder="Password" required>
+              </td>
+              <td>
+                <input type="password" name="password2" placeholder="Confirm Password" required>
+              </td>
+              <td></td> <!-- Leave the company column empty for new member -->
+              <td>
+                <input class="btn btn-success" type="submit" value="Create New Member">
+              </td>
+            </form>
+          </tr>
+        </tbody>
+      </table>
+    <br />
+    
+    <h3>List of Companies</h3>
+    <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Company Name</th>
+            <th>PBI Source</th>
+            <th>Update URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for company in companies %}
+            <tr>
+              <td>{{ company.id }}</td>
+              <td>{{ company.company_name }}</td>
+              <td class="url-cell">{{ company.pbi_source }}</td>
+              <td>
+                <form action="{{ url_for('auth.update_pbi', target_company_id=company.id) }}" method="post">
+                  <input type="text" name="newPBI" placeholder="PBI Source" required>
+                  <input class="btn btn-danger" type="submit" value="Update">
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          <tr>
+            <form action="{{ url_for('auth.create_company') }}" method="POST">
+              <td></td> <!-- Leave the ID column empty for new member -->
+              <td>
+                <input type="text" name="companyName" placeholder="Company Name" required>
+              </td>
+              <td>
+                <input type="text" name="pbiSource" placeholder="PBI Source">
+              </td>
+              <td>
+                <input class="btn btn-success" type="submit" value="Create New Company">
+              </td>
+            </form>
+          </tr>
+        </tbody>
+      </table>
+{% endblock %}

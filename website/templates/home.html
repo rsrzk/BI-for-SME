@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 align="center">Report</h1>
+<br />
+{% if user.authorization == 'admin' and user.company.company_name == 'No company assigned' %}
+    <!-- Display the company selection dropdown -->
+    <form action="{{ url_for('auth.select_company') }}" method="POST">
+        <select name="company">
+        <option value="">-- Select Company --</option>
+        {% for company in companies %}
+            {% if company.name != 'No company assigned' %}
+                <option value="{{ company.id }}">{{ company.name }}</option>
+            {% endif %}
+        {% endfor %}
+        </select>
+        <input type="submit" value="Select">
+    </form>
+    {% if selected_company_name %}
+    <h3>{{ selected_company_name }}</h3>
+    {% endif %}
+    {% if selected_company_pbi %}
+    <p>{{ selected_company_pbi }}</p>
+    <!-- Display the assigned company's iframe -->
+    <iframe title="Report Section" width="1280" height="720" src="{{ selected_company_pbi }}" frameborder="0" allowFullScreen="true"></iframe>
+    {% else %}
+        <!-- Display the message for no assigned company -->
+        <p>PBI report not available as you have no company assigned.</p>
+    {% endif %}
+{% else %}
+    {% if user.company %}
+    <h3> {{ user.company.company_name }}</h3>
+        <!-- Display the assigned company's iframe -->
+        <iframe title="Report Section" width="1280" height="720" src="{{ user.company.pbi_source }}" frameborder="0" allowFullScreen="true"></iframe>
+    {% else %}
+        <!-- Display the message for no assigned company -->
+        <p>PBI report not available as you have no company assigned.</p>
+    {% endif %}
+{% endif %}
+<br />
+<h1 align="center">Notes</h1>
+<ul class="list-group list-group-flush" id="notes">
+    {% for note in user.notes %}
+    <li class="list-group-item">
+        {{ note.data }}
+        <button type="button" class="close" onClick="deleteNote('{{ note.id }}')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </li>
+    {% endfor %}
+</ul>
+
+<form method="POST">
+    <textarea name="note" id="note" class="form-control"></textarea>
+    <br />
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Add Note</button>
+    </div>
+</form>
+{% endblock %}
