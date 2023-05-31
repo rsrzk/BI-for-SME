@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, flash, request, jsonify, session
 from flask_login import login_required, current_user
 from .models import Note, Company
 from . import db
-import json
 
 views = Blueprint('views', __name__)
 
