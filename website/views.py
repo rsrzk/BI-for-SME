@@ -46,3 +46,7 @@ def delete_note():
             db.session.commit()
             
     return jsonify({})
+
+@views.route('/demo')
+def demo():
+    return render_template("demo.html", user=current_user)
