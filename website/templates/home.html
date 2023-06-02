@@ -23,7 +23,9 @@
     {% if selected_company_pbi %}
     <p>{{ selected_company_pbi }}</p>
     <!-- Display the assigned company's iframe -->
-    <iframe title="Report Section" width="1280" height="720" src="{{ selected_company_pbi }}" frameborder="0" allowFullScreen="true"></iframe>
+    <div id="Container" style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+        <iframe id="BIreport" width="100%" height="100%" src="{{ selected_company_pbi }}" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"></iframe>
+    </div>
     {% else %}
         <!-- Display the message for no assigned company -->
         <p>PBI report not available as you have no company assigned.</p>
@@ -32,7 +34,9 @@
     {% if user.company %}
     <h3> {{ user.company.company_name }}</h3>
         <!-- Display the assigned company's iframe -->
-        <iframe title="Report Section" width="1280" height="720" src="{{ user.company.pbi_source }}" frameborder="0" allowFullScreen="true"></iframe>
+        <div id="Container" style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+            <iframe id="BIreport" width="100%" height="100%" src="{{ selected_company_pbi }}" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"></iframe>
+        </div>
     {% else %}
         <!-- Display the message for no assigned company -->
         <p>PBI report not available as you have no company assigned.</p>

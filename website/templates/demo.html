@@ -4,5 +4,8 @@
 {% block content %}
 <h1 align="center">Report</h1>
 <br />
-<iframe title="Report Section" width="1280" height="720" src="https://app.powerbi.com/view?r=eyJrIjoiNzc0MGViZmMtY2YxNy00MmFlLTk4MzYtYTM3NzhiMDQ2MjY5IiwidCI6IjEyMTZiNWUzLTExN2YtNGQ1MC1hOGNhLWQ5YWUyNjlkZjcxNyIsImMiOjEwfQ%3D%3D" frameborder="0" allowFullScreen="true"></iframe>
-{% endblock %}
+
+<div id="Container" style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
+    <iframe id="BIreport" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiNzc0MGViZmMtY2YxNy00MmFlLTk4MzYtYTM3NzhiMDQ2MjY5IiwidCI6IjEyMTZiNWUzLTExN2YtNGQ1MC1hOGNhLWQ5YWUyNjlkZjcxNyIsImMiOjEwfQ%3D%3D" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"></iframe>
+</div>
+    {% endblock %}
