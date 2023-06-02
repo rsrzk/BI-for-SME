@@ -50,3 +50,7 @@ def delete_note():
 @views.route('/demo')
 def demo():
     return render_template("demo.html", user=current_user)
+
+@views.route('/faq')
+def faq():
+    return render_template('faq.html', user=current_user)
