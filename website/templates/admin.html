@@ -41,7 +41,6 @@
               <td>
                 <form action="{{ url_for('auth.assign_company', target_user_id=user.id) }}" method="post">
                   <select name="company_id">
-                    <option value="">None</option>
                     {% for company in companies %}
                       <option value="{{ company.id }}" {% if user.company and user.company.id == company.id %}selected{% endif %}>{{ company.company_name }}</option>
                     {% endfor %}
