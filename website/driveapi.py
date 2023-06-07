@@ -91,34 +91,43 @@ def upload_file():
             return 'fas fa-file-alt'
 
     if request.method == 'POST':
-        uploaded_files = request.files.getlist("file")
+        try:
+            uploaded_files = request.files.getlist("file")
 
-        for uploaded_file in uploaded_files:
-            buffer_memory = BytesIO()
-            uploaded_file.save(buffer_memory)
+            for uploaded_file in uploaded_files:
+                buffer_memory = BytesIO()
+                uploaded_file.save(buffer_memory)
 
-            media_body = MediaIoBaseUpload(uploaded_file, uploaded_file.mimetype, resumable=True)
+                media_body = MediaIoBaseUpload(uploaded_file, uploaded_file.mimetype, resumable=True)
 
-            created_at = datetime.now().strftime("%Y%m%d%H%M%S")
+                created_at = datetime.now().strftime("%Y%m%d%H%M%S")
 
-            file_metadata = {
-                "name": f"{uploaded_file.filename} ({created_at})",
-                "parents": [drive_folder]
-            }
+                file_metadata = {
+                    "name": f"{uploaded_file.filename} ({created_at})",
+                    "parents": [drive_folder]
+                }
 
-            returned_fields = "id, name, mimeType, webViewLink, exportLinks"
+                returned_fields = "id, name, mimeType, webViewLink, exportLinks"
 
-            upload_response = service.files().create(
-                body=file_metadata,
-                media_body=media_body,
-                fields=returned_fields
-            ).execute()
+                upload_response = service.files().create(
+                    body=file_metadata,
+                    media_body=media_body,
+                    fields=returned_fields
+                ).execute()
 
-        flash('File uploaded successfully.', category='success')
+            flash('File uploaded successfully.', category='success')
+        except Exception as e:
+            flash('An error occurred while uploading the file.', category='error')
 
-    query = f"'{drive_folder}' in parents"
-    response = service.files().list(q=query, fields='files(name, mimeType, webViewLink, createdTime, thumbnailLink)').execute()
-    files = response.get('files', [])
+    try:
+        query = f"'{drive_folder}' in parents"
+        response = service.files().list(q=query, fields='files(name, mimeType, webViewLink, createdTime, thumbnailLink)').execute()
+        files = response.get('files', [])
+
+    except Exception as e:
+        flash('An error occurred while retrieving the files.', category='error')
+        files = []
+
     return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name, files=files, get_file_icon=get_file_icon)
 
 @driveapi.delete('/file/<file_id>/')
