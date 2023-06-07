@@ -240,3 +240,20 @@ def create_company():
             flash('Error occurred while creating new member.', category='error')
             return redirect(url_for('auth.admin'))
     return render_template("admin.html", user=current_user)
+
+@auth.route('/admin/delete_company/<int:target_company_id>', methods=['POST'])
+@login_required
+def delete_company(target_company_id):
+    if target_company_id == 1:
+        flash("You may not delete this default entry.", category='error')
+        return redirect(url_for('auth.admin'))
+    
+    company = Company.query.get(target_company_id)
+    if not company:
+        flash("Company not found.", category='error')
+    else:
+        db.session.delete(company)
+        db.session.commit()
+        flash("Company deleted successfully.", category='success')
+
+    return redirect(url_for('auth.admin'))

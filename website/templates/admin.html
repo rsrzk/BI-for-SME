@@ -48,7 +48,7 @@
                   </select>
                   <input class="btn btn-primary" type="submit" value="Update">
                 </form>
-            </td>
+              </td>
               <td>
                 {% if user.id != current_user.id %}
                   <form action="{{ url_for('auth.delete_user', target_user_id=user.id) }}" method="post">
@@ -93,6 +93,7 @@
             <th>Update URL</th>
             <th>Drive Folder</th>
             <th>Update Folder ID</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -113,6 +114,13 @@
                   <input type="text" name="newDrive" placeholder="Drive Folder" required>
                   <input class="btn btn-danger" type="submit" value="Update">
                 </form>
+              </td>
+              <td>
+                {% if company.id != 1 %}
+                  <form action="{{ url_for('auth.delete_company', target_company_id=company.id) }}" method="post">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
