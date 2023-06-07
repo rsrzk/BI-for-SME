@@ -91,6 +91,8 @@
             <th>Company Name</th>
             <th>PBI Source</th>
             <th>Update URL</th>
+            <th>Drive Folder</th>
+            <th>Update Folder ID</th>
           </tr>
         </thead>
         <tbody>
@@ -105,6 +107,13 @@
                   <input class="btn btn-danger" type="submit" value="Update">
                 </form>
               </td>
+              <td class="url-cell">{{ company.drive_folder }}</td>
+              <td>
+                <form action="{{ url_for('auth.update_drive', target_company_id=company.id) }}" method="post">
+                  <input type="text" name="newDrive" placeholder="Drive Folder" required>
+                  <input class="btn btn-danger" type="submit" value="Update">
+                </form>
+              </td>
             </tr>
           {% endfor %}
           <tr>
@@ -115,6 +124,10 @@
               </td>
               <td>
                 <input type="text" name="pbiSource" placeholder="PBI Source">
+              </td>
+              <td></td> <!-- Leave the ID column empty for new member -->
+              <td>
+                <input type="text" name="driveFolder" placeholder="Drive Folder">
               </td>
               <td>
                 <input class="btn btn-success" type="submit" value="Create New Company">
