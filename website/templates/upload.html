@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Upload{% endblock %}
+
+{% block content %}
+<h1 align="center">File Upload to Drive</h1>
+{% if drive_folder == None %}
+<br/>
+<p>Upload unavailable as storage has not been assigned by admin.</p>
+{% else %}
+<h3> {{ company_name }} folder</h3>
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" multiple required>
+  <br>
+  <button type="submit">Upload</button>
+</form>
+
+<table>
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>MIME Type</th>
+    <th>Created time</th>
+    <th>Web View Link</th>
+  </tr>
+  {% for file in files %}
+  <tr>
+    <td><i class="{{ get_file_icon(file.mimeType) }} file-icon"></i></td>
+    <td>{{ file.name }}</td>
+    <td>{{ file.mimeType }}</td>
+    <td>{{ file.createdTime }}</td>
+    <td><a href="{{ file.webViewLink }}">View</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endif %}
+{% endblock %}

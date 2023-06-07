@@ -41,14 +41,13 @@
               <td>
                 <form action="{{ url_for('auth.assign_company', target_user_id=user.id) }}" method="post">
                   <select name="company_id">
-                    <option value="">None</option>
                     {% for company in companies %}
                       <option value="{{ company.id }}" {% if user.company and user.company.id == company.id %}selected{% endif %}>{{ company.company_name }}</option>
                     {% endfor %}
                   </select>
                   <input class="btn btn-primary" type="submit" value="Update">
                 </form>
-            </td>
+              </td>
               <td>
                 {% if user.id != current_user.id %}
                   <form action="{{ url_for('auth.delete_user', target_user_id=user.id) }}" method="post">
@@ -91,6 +90,9 @@
             <th>Company Name</th>
             <th>PBI Source</th>
             <th>Update URL</th>
+            <th>Drive Folder</th>
+            <th>Update Folder ID</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -102,8 +104,22 @@
               <td>
                 <form action="{{ url_for('auth.update_pbi', target_company_id=company.id) }}" method="post">
                   <input type="text" name="newPBI" placeholder="PBI Source" required>
-                  <input class="btn btn-danger" type="submit" value="Update">
+                  <input class="btn btn-primary" type="submit" value="Update">
                 </form>
+              </td>
+              <td class="url-cell">{{ company.drive_folder }}</td>
+              <td>
+                <form action="{{ url_for('auth.update_drive', target_company_id=company.id) }}" method="post">
+                  <input type="text" name="newDrive" placeholder="Drive Folder" required>
+                  <input class="btn btn-primary" type="submit" value="Update">
+                </form>
+              </td>
+              <td>
+                {% if company.id != 1 %}
+                  <form action="{{ url_for('auth.delete_company', target_company_id=company.id) }}" method="post">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                  </form>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
@@ -115,6 +131,10 @@
               </td>
               <td>
                 <input type="text" name="pbiSource" placeholder="PBI Source">
+              </td>
+              <td></td> <!-- Leave the ID column empty for new member -->
+              <td>
+                <input type="text" name="driveFolder" placeholder="Drive Folder">
               </td>
               <td>
                 <input class="btn btn-success" type="submit" value="Create New Company">

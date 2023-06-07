@@ -199,6 +199,16 @@ def update_pbi(target_company_id):
     flash("PBI source updated successfully.", category='success')
     return redirect(url_for('auth.admin'))
 
+@auth.route('/admin/update_drive/<int:target_company_id>', methods=['POST'])
+@login_required
+def update_drive(target_company_id):
+    company = Company.query.get(target_company_id)
+    new_drive = request.form['newDrive']
+    company.drive_folder = new_drive
+    db.session.commit()
+    flash("Google drive folder updated successfully.", category='success')
+    return redirect(url_for('auth.admin'))
+
 @auth.route('/create_company', methods=['POST'])
 def create_company():
     new_company = None  # Declare the new_user variable with a default value
@@ -206,6 +216,7 @@ def create_company():
         # Validating and creating a new user
         company_name = request.form.get('companyName')
         pbi_source = request.form.get('pbiSource')
+        drive_folder = request.form.get('driveFolder')
 
         company_exists = Company.query.filter_by(company_name=company_name).first()
         if company_exists:
@@ -213,7 +224,7 @@ def create_company():
         elif len(company_name) < 1:
             flash('Company name must be greater than 1 character.', category='error')
         else:
-            new_company = Company(company_name=company_name, pbi_source=pbi_source)
+            new_company = Company(company_name=company_name, pbi_source=pbi_source, drive_folder=drive_folder)
             
             # Save the new company to the database
             db.session.add(new_company)
@@ -229,3 +240,20 @@ def create_company():
             flash('Error occurred while creating new member.', category='error')
             return redirect(url_for('auth.admin'))
     return render_template("admin.html", user=current_user)
+
+@auth.route('/admin/delete_company/<int:target_company_id>', methods=['POST'])
+@login_required
+def delete_company(target_company_id):
+    if target_company_id == 1:
+        flash("You may not delete this default entry.", category='error')
+        return redirect(url_for('auth.admin'))
+    
+    company = Company.query.get(target_company_id)
+    if not company:
+        flash("Company not found.", category='error')
+    else:
+        db.session.delete(company)
+        db.session.commit()
+        flash("Company deleted successfully.", category='success')
+
+    return redirect(url_for('auth.admin'))

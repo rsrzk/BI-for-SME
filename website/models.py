@@ -25,6 +25,7 @@ class Company(db.Model):
     company_name = db.Column(db.String(150), unique=True)
     creation_date = db.Column(db.DateTime(timezone=True), default=func.now())
     pbi_source = db.Column(db.String(100000))
+    drive_folder = db.Column(db.String(100000))
 
     def to_dict(self):
         return {'id': self.id, 'name': self.company_name}
