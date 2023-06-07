@@ -17,9 +17,11 @@ def create_app():
 
     from .views import views
     from .auth import auth
+    from .driveapi import driveapi
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(driveapi, url_prefix='/')
 
     from .models import User, Note
 

@@ -1,6 +1,7 @@
 from website import create_app
 from website.models import Company, db
 
+
 app = create_app()
 
 @app.before_request
