@@ -71,6 +71,25 @@ def upload_file():
     user = current_user
     company_name = user.company.company_name if user.company else None
     drive_folder = user.company.drive_folder if user.company else None
+
+    def get_file_icon(mimeType):
+        if mimeType.startswith('application/vnd.ms-excel') or mimeType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            return 'fas fa-file-excel'
+        elif mimeType == 'application/vnd.google-apps.spreadsheet':
+            return 'fas fa-file-excel'
+        elif mimeType.startswith('application/vnd.ms-powerpoint') or mimeType == 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+            return 'fas fa-file-powerpoint'
+        elif mimeType == 'application/vnd.google-apps.presentation':
+            return 'fas fa-file-powerpoint'
+        elif mimeType.startswith('application/msword') or mimeType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+            return 'fas fa-file-word'
+        elif mimeType == 'application/vnd.google-apps.document':
+            return 'fas fa-file-word'
+        elif mimeType.startswith('image/'):
+            return 'fas fa-file-image'
+        else:
+            return 'fas fa-file-alt'
+
     if request.method == 'POST':
         uploaded_files = request.files.getlist("file")
 
@@ -96,9 +115,11 @@ def upload_file():
             ).execute()
 
         flash('File uploaded successfully.', category='success')
-        return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name)
-    else:
-        return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name)
+
+    query = f"'{drive_folder}' in parents"
+    response = service.files().list(q=query, fields='files(name, mimeType, webViewLink, createdTime, thumbnailLink)').execute()
+    files = response.get('files', [])
+    return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name, files=files, get_file_icon=get_file_icon)
 
 @driveapi.delete('/file/<file_id>/')
 def delete_file(file_id):

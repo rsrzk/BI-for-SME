@@ -13,5 +13,25 @@
   <br>
   <button type="submit">Upload</button>
 </form>
+
+<table>
+  <tr>
+    <th></th>
+    <th>Name</th>
+    <th>MIME Type</th>
+    <th>Created time</th>
+    <th>Web View Link</th>
+  </tr>
+  {% for file in files %}
+  <tr>
+    <td><i class="{{ get_file_icon(file.mimeType) }} file-icon"></i></td>
+    <td>{{ file.name }}</td>
+    <td>{{ file.mimeType }}</td>
+    <td>{{ file.createdTime }}</td>
+    <td><a href="{{ file.webViewLink }}">View</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
 {% endif %}
 {% endblock %}
