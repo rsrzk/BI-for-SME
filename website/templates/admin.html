@@ -105,14 +105,14 @@
               <td>
                 <form action="{{ url_for('auth.update_pbi', target_company_id=company.id) }}" method="post">
                   <input type="text" name="newPBI" placeholder="PBI Source" required>
-                  <input class="btn btn-danger" type="submit" value="Update">
+                  <input class="btn btn-primary" type="submit" value="Update">
                 </form>
               </td>
               <td class="url-cell">{{ company.drive_folder }}</td>
               <td>
                 <form action="{{ url_for('auth.update_drive', target_company_id=company.id) }}" method="post">
                   <input type="text" name="newDrive" placeholder="Drive Folder" required>
-                  <input class="btn btn-danger" type="submit" value="Update">
+                  <input class="btn btn-primary" type="submit" value="Update">
                 </form>
               </td>
               <td>

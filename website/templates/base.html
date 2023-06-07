@@ -52,6 +52,7 @@
                     </div>
                     {% if user.is_authenticated %}
                     <a class="nav-item nav-link" id="home" href="/">Home</a>
+                    <a class="nav-item nav-link" id="upload" href="/upload">Upload</a>
                     <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
                     <a class="nav-item nav-link" id="profile" href="/profile">Profile</a>
                         {% if current_user.authorization == 'admin' %}

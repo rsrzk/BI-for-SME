@@ -1,9 +1,12 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template, flash
 from .g_drive_service import GoogleDriveService
 from io import BytesIO
 from googleapiclient.http import MediaIoBaseUpload
 from datetime import datetime
 from apiclient import errors
+from .models import User, Company
+from . import db
+from flask_login import login_required, current_user
 
 driveapi = Blueprint('driveapi', __name__)
 
@@ -46,21 +49,6 @@ def get_files_with_type():
         fields=selected_field
     ).execute()
 
-
-@driveapi.get('/files-with-limit-offset')
-def get_files_with_limit_offset():
-    limit=request.args.get("limit")
-    next_page_token=request.args.get("next_page_token")
-
-    selected_field="nextPageToken, files(id, name, webViewLink, mimeType)"
-    
-    result=service.files().list(
-        pageSize=limit, 
-        pageToken=next_page_token, 
-        fields=selected_field
-    ).execute()
-    return result
-
 @driveapi.get('/files-with-limit-offset-order')
 def get_files_with_limit_offset_order():
     limit=request.args.get("limit")
@@ -77,32 +65,40 @@ def get_files_with_limit_offset_order():
     ).execute()
     return result
 
-@driveapi.post('/upload')
+@driveapi.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_file():
-    
-    uploaded_file=request.files.get("file")
+    user = current_user
+    company_name = user.company.company_name if user.company else None
+    drive_folder = user.company.drive_folder if user.company else None
+    if request.method == 'POST':
+        uploaded_files = request.files.getlist("file")
 
-    buffer_memory=BytesIO()
-    uploaded_file.save(buffer_memory)
+        for uploaded_file in uploaded_files:
+            buffer_memory = BytesIO()
+            uploaded_file.save(buffer_memory)
 
-    media_body=MediaIoBaseUpload(uploaded_file, uploaded_file.mimetype, resumable=True)
+            media_body = MediaIoBaseUpload(uploaded_file, uploaded_file.mimetype, resumable=True)
 
-    created_at= datetime.now().strftime("%Y%m%d%H%M%S")
+            created_at = datetime.now().strftime("%Y%m%d%H%M%S")
 
-    file_metadata={
-    "name":f"{uploaded_file.filename} ({created_at})",
-    "parents": ["1vZULQWPmtRsoRCCROdYsmQPbJ2meji2V"]
-    }
+            file_metadata = {
+                "name": f"{uploaded_file.filename} ({created_at})",
+                "parents": [drive_folder]
+            }
 
-    returned_fields="id, name, mimeType, webViewLink, exportLinks, appProperties"
-    
-    upload_response=service.files().create(
-        body = file_metadata, 
-        media_body=media_body,  
-        fields=returned_fields
-    ).execute()
+            returned_fields = "id, name, mimeType, webViewLink, exportLinks"
 
-    return upload_response
+            upload_response = service.files().create(
+                body=file_metadata,
+                media_body=media_body,
+                fields=returned_fields
+            ).execute()
+
+        flash('File uploaded successfully.', category='success')
+        return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name)
+    else:
+        return render_template('upload.html', user=current_user, drive_folder=drive_folder, company_name=company_name)
 
 @driveapi.delete('/file/<file_id>/')
 def delete_file(file_id):
