@@ -54,3 +54,7 @@ def demo():
 @views.route('/faq')
 def faq():
     return render_template('faq.html', user=current_user)
+
+@views.route('/about-us')
+def about_us():
+    return render_template('about_us.html', user=current_user)
