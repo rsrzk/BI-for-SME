@@ -35,7 +35,7 @@
     <h3> {{ user.company.company_name }}</h3>
         <!-- Display the assigned company's iframe -->
         <div id="Container" style="padding-bottom:56.25%; position:relative; display:block; width: 100%">
-            <iframe id="BIreport" width="100%" height="100%" src="{{ selected_company_pbi }}" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"></iframe>
+            <iframe id="BIreport" width="100%" height="100%" src="{{ user.company.pbi_source }}" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"></iframe>
         </div>
     {% else %}
         <!-- Display the message for no assigned company -->
