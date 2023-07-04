@@ -1,6 +1,8 @@
 from website import create_app
 from website.models import Company, db
 
+# Go go Rais !
+# NW Jul 3, 2023 Mon
 
 app = create_app()
 
